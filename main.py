@@ -1,51 +1,24 @@
-import pygame 
+import pygame as pg 
 
-RES = WIDTH,HEIGHT = 1600, 900 #разрешение 1600х900
-NUM_STARS = 100 #Задаем чилсо звезд
-
-class Star:  #Создает одну звездочку 
-
-	def __init__(self):
-		
-		pass 
-
-	def update(self):  #Обновления звезды
-
-		pass 
-
-	def draw(self):   #Отрисовка 
-
-		pass 
-
-class StarField: #Будем управлятся экземпляр класса Star
-
-	def __init__(self, app):
-		
-		self.stars = [Star(app) for i in range(NUM_STARS)] #Создаем список экземпляра класса Star
-	
-	def run(self):
-
-		[star.update() for star in self.stars]  #Будем проходить по списку 
-		[star.update() for star in self.stars] 
+RES = WIDTH, HEIGHT = 1600, 900   #разрешение 1600х900 
 
 class App:
 
-	def __init__(self):
-
-	    self.screen = pygame.display.set_mode(RES) #Создаем поверхность отрисовки
-	    self.clock = pygame.time.Clock() #создаем экземпляр Clock для установки FPS
+	def __init__(self) -> None:
+		
+		self.screen = pg.display.set_mode(RES) #Создаем поверхность отрисовки
+		self.clock  = pg.time.Clock() #Создаем экземпляр Clock для установки FPS 
 
 	def run(self):
 
-		while True: #На каждой итерации выполняем следующее:
-			self.screen.fill('black') #Закрашиваем поверхность отрисовки в черный цвет
-
-			pygame.display.flip() #обновляем кадр отображаем то, что нарисовали на текущей итерации
-			[exit() for i in pygame.event.get() if i.type == pygame.QUIT] #Проверка на закрытые приложения
-			self.clock.tick(60) #Устанавливем 60 кадров в секунду
+		while True: #На каждой итерации выполняем следующее 
+			self.screen.fill('black') #закрашиваем поверхность отрисовки в черный цвет 
+			
+			pg.display.flip() #обновляем кадр(отображаем то что нарисовали на текущей итерации)
+			[exit() for i in pg.event.get() if i.type == pg.QUIT] #проверка на закрытие приложения 
+			self.clock.tick(60) #устанавливаем 60 кадров в секудну
 
 if __name__ == '__main__':
 
-	app = App() #Создаем экземпляр класса App 
-	app.run() #вызываем метод Запуск или (run)
-	
+	app = App() #создаем экземпляр класса App 
+	app.run()
