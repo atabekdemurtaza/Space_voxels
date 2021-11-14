@@ -5,10 +5,11 @@ import math
 vec2, vec3 = pg.math.Vector2, pg.math.Vector3 #Создаем вектора
 
 RES = WIDTH, HEIGHT = 1600, 900   #разрешение 1600х900 
-NUM_STARS = 100 #число звезд
+NUM_STARS = 2000 #число звезд
 CENTER = vec2(WIDTH // 2, HEIGHT // 2)
 COLORS = '#e74645 #1ac0c6 #8a2be2 #f2e968 #c91060 #dee0e6'.split()
-Z_DISTANCE = 40 #Создаем 3д (z) где звезды начнут двигатся 
+Z_DISTANCE = 140 #Создаем 3д (z) где звезды начнут двигатся 
+ALPHA = 30
 
 
 
@@ -18,15 +19,17 @@ class Star: #Создаем 1 звездочку
 
 		self.screen = app.screen #Поверхность отрисовки 
 		self.pos3d  = self.get_pos3d()       #Позиция 3х пространстве 
-		self.vel 	= random.uniform(0.05, 0.25) #скорость звезды
+		self.vel 	= random.uniform(0.45, 0.95) #скорость звезды
 		self.color	= random.choice(COLORS) #рандомность цвета
 		self.screen_pos = vec2(0, 0) #позиция звезды на экране
 		self.size = 10
 	
-	def get_pos3d(self):
+	def get_pos3d(self, scale_pos=35):
 
 		angle = random.uniform(0, 2*math.pi) #
-		radius = random.randrange(HEIGHT)
+		#radius = random.randrange(HEIGHT)
+		#radius = random.randrange(HEIGHT // scale_pos, HEIGHT) * scale_pos #увеличиваем рандомный радиус
+		radius = random.randrange(HEIGHT // 4, HEIGHT // 3) * scale_pos
 		#Вычитываем координаты с помощью синуса и косинуса
 		x = radius * math.sin(angle)
 		y = radius * math.cos(angle)
@@ -37,6 +40,14 @@ class Star: #Создаем 1 звездочку
 		self.pos3d.z -= self.vel #Будем двигать звезду по оси Z 
 		self.pos3d = self.get_pos3d() if self.pos3d.z < 1 else self.pos3d #Если звезда сближается к 1 до рандомно назад
 		self.screen_pos = vec2(self.pos3d.x, self.pos3d.y) / self.pos3d.z + CENTER
+		#расчет звезды
+		#self.size = Z_DISTANCE / self.pos3d.z 
+		self.size = (Z_DISTANCE - self.pos3d.z) / (0.2 * self.pos3d.z)
+		#Поворот на x, y
+		self.pos3d.xy = self.pos3d.xy.rotate(0.2)
+		#мышку
+		mouse_pos = CENTER - vec2(pg.mouse.get_pos())
+		self.screen_pos += mouse_pos
 
 	def draw(self):
 
@@ -51,6 +62,8 @@ class StarField: #Управляем звезд
 	def run(self):
 
 		[star.update() for star in self.stars]
+		#Сортировка буфферизации
+		self.stars.sort(key=lambda star: star.pos3d.z, reverse=True)
 		[star.draw() for star in self.stars]
 
 class App:
@@ -58,6 +71,8 @@ class App:
 	def __init__(self):
 		
 		self.screen = pg.display.set_mode(RES) #Создаем поверхность отрисовки
+		self.alpha_surface = pg.Surface(RES)
+		self.alpha_surface.set_alpha(ALPHA)
 		self.clock  = pg.time.Clock() #Создаем экземпляр Clock для установки FPS 
 		self.starfield = StarField(self) 
 
@@ -65,7 +80,8 @@ class App:
 	def run(self):
 
 		while True: #На каждой итерации выполняем следующее 
-			self.screen.fill('black') #закрашиваем поверхность отрисовки в черный цвет 
+			#self.screen.fill('black') #закрашиваем поверхность отрисовки в черный цвет 
+			self.screen.blit(self.alpha_surface, (0,0))
 			self.starfield.run()
 
 			
