@@ -1,6 +1,32 @@
 import pygame 
 
 RES = WIDTH,HEIGHT = 1600, 900 #разрешение 1600х900
+NUM_STARS = 100 #Задаем чилсо звезд
+
+class Star:  #Создает одну звездочку 
+
+	def __init__(self):
+		
+		pass 
+
+	def update(self):  #Обновления звезды
+
+		pass 
+
+	def draw(self):   #Отрисовка 
+
+		pass 
+
+class StarField: #Будем управлятся экземпляр класса Star
+
+	def __init__(self, app):
+		
+		self.stars = [Star(app) for i in range(NUM_STARS)] #Создаем список экземпляра класса Star
+	
+	def run(self):
+
+		[star.update() for star in self.stars]  #Будем проходить по списку 
+		[star.update() for star in self.stars] 
 
 class App:
 
